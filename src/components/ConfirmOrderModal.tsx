@@ -89,6 +89,12 @@ export function ConfirmOrderModal({
               <Row label="Subtotal" value={`₹${subtotal}`} />
               <Row label="Delivery" value={`₹${delivery}`} />
               <Row label="Tax (5%)" value={`₹${taxes}`} />
+              {discount > 0 && (
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Promo</span>
+                  <span className="font-bold text-success">−₹{discount}</span>
+                </div>
+              )}
             </div>
 
             <div className="my-3 border-t border-border" />
