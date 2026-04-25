@@ -9,6 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SearchRouteImport } from './routes/search'
+import { Route as SavedRouteImport } from './routes/saved'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as PaymentRouteImport } from './routes/payment'
+import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as OrderTrackingRouteImport } from './routes/order-tracking'
 import { Route as OrderSuccessRouteImport } from './routes/order-success'
 import { Route as HomeRouteImport } from './routes/home'
@@ -17,6 +22,31 @@ import { Route as ArRouteImport } from './routes/ar'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as FoodIdRouteImport } from './routes/food.$id'
 
+const SearchRoute = SearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SavedRoute = SavedRouteImport.update({
+  id: '/saved',
+  path: '/saved',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentRoute = PaymentRouteImport.update({
+  id: '/payment',
+  path: '/payment',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrdersRoute = OrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OrderTrackingRoute = OrderTrackingRouteImport.update({
   id: '/order-tracking',
   path: '/order-tracking',
@@ -60,6 +90,11 @@ export interface FileRoutesByFullPath {
   '/home': typeof HomeRoute
   '/order-success': typeof OrderSuccessRoute
   '/order-tracking': typeof OrderTrackingRoute
+  '/orders': typeof OrdersRoute
+  '/payment': typeof PaymentRoute
+  '/profile': typeof ProfileRoute
+  '/saved': typeof SavedRoute
+  '/search': typeof SearchRoute
   '/food/$id': typeof FoodIdRoute
 }
 export interface FileRoutesByTo {
@@ -69,6 +104,11 @@ export interface FileRoutesByTo {
   '/home': typeof HomeRoute
   '/order-success': typeof OrderSuccessRoute
   '/order-tracking': typeof OrderTrackingRoute
+  '/orders': typeof OrdersRoute
+  '/payment': typeof PaymentRoute
+  '/profile': typeof ProfileRoute
+  '/saved': typeof SavedRoute
+  '/search': typeof SearchRoute
   '/food/$id': typeof FoodIdRoute
 }
 export interface FileRoutesById {
@@ -79,6 +119,11 @@ export interface FileRoutesById {
   '/home': typeof HomeRoute
   '/order-success': typeof OrderSuccessRoute
   '/order-tracking': typeof OrderTrackingRoute
+  '/orders': typeof OrdersRoute
+  '/payment': typeof PaymentRoute
+  '/profile': typeof ProfileRoute
+  '/saved': typeof SavedRoute
+  '/search': typeof SearchRoute
   '/food/$id': typeof FoodIdRoute
 }
 export interface FileRouteTypes {
@@ -90,6 +135,11 @@ export interface FileRouteTypes {
     | '/home'
     | '/order-success'
     | '/order-tracking'
+    | '/orders'
+    | '/payment'
+    | '/profile'
+    | '/saved'
+    | '/search'
     | '/food/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -99,6 +149,11 @@ export interface FileRouteTypes {
     | '/home'
     | '/order-success'
     | '/order-tracking'
+    | '/orders'
+    | '/payment'
+    | '/profile'
+    | '/saved'
+    | '/search'
     | '/food/$id'
   id:
     | '__root__'
@@ -108,6 +163,11 @@ export interface FileRouteTypes {
     | '/home'
     | '/order-success'
     | '/order-tracking'
+    | '/orders'
+    | '/payment'
+    | '/profile'
+    | '/saved'
+    | '/search'
     | '/food/$id'
   fileRoutesById: FileRoutesById
 }
@@ -118,11 +178,51 @@ export interface RootRouteChildren {
   HomeRoute: typeof HomeRoute
   OrderSuccessRoute: typeof OrderSuccessRoute
   OrderTrackingRoute: typeof OrderTrackingRoute
+  OrdersRoute: typeof OrdersRoute
+  PaymentRoute: typeof PaymentRoute
+  ProfileRoute: typeof ProfileRoute
+  SavedRoute: typeof SavedRoute
+  SearchRoute: typeof SearchRoute
   FoodIdRoute: typeof FoodIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/search': {
+      id: '/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/saved': {
+      id: '/saved'
+      path: '/saved'
+      fullPath: '/saved'
+      preLoaderRoute: typeof SavedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment': {
+      id: '/payment'
+      path: '/payment'
+      fullPath: '/payment'
+      preLoaderRoute: typeof PaymentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/orders': {
+      id: '/orders'
+      path: '/orders'
+      fullPath: '/orders'
+      preLoaderRoute: typeof OrdersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/order-tracking': {
       id: '/order-tracking'
       path: '/order-tracking'
@@ -182,6 +282,11 @@ const rootRouteChildren: RootRouteChildren = {
   HomeRoute: HomeRoute,
   OrderSuccessRoute: OrderSuccessRoute,
   OrderTrackingRoute: OrderTrackingRoute,
+  OrdersRoute: OrdersRoute,
+  PaymentRoute: PaymentRoute,
+  ProfileRoute: ProfileRoute,
+  SavedRoute: SavedRoute,
+  SearchRoute: SearchRoute,
   FoodIdRoute: FoodIdRoute,
 }
 export const routeTree = rootRouteImport

@@ -9,6 +9,7 @@ type Props = {
   delivery: number;
   taxes: number;
   total: number;
+  discount?: number;
   estimatedMinutes: number;
   onEdit: () => void;
   onConfirm: () => void;
