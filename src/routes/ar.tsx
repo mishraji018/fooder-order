@@ -28,13 +28,14 @@ function ARView() {
       {/* Top bar */}
       <header className="relative z-10 flex items-center justify-between px-4 pt-4">
         <button
-          onClick={() => navigate({ to: "/home" })}
+          onClick={() => navigate({ to: orderedItems.length ? "/order-tracking" : "/home" })}
           className="flex h-10 w-10 items-center justify-center rounded-full bg-white/15 backdrop-blur-md"
         >
           <X size={18} />
         </button>
-        <div className="rounded-full bg-secondary px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider">
-          • AR Mode
+        <div className="text-sm font-bold">AR Mode 🥽</div>
+        <div className="rounded-full bg-secondary px-3 py-1 text-[10px] font-bold uppercase tracking-wider">
+          • Live
         </div>
       </header>
 
