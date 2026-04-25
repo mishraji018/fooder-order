@@ -110,7 +110,7 @@ function CartPage() {
 
           <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[430px] -translate-x-1/2 border-t border-border bg-card p-4">
             <button
-              onClick={handlePlace}
+              onClick={() => setConfirmOpen(true)}
               className="w-full rounded-xl bg-primary py-3.5 text-sm font-bold text-primary-foreground"
             >
               Place Order — ₹{total}
@@ -118,6 +118,18 @@ function CartPage() {
           </div>
         </>
       )}
+
+      <ConfirmOrderModal
+        open={confirmOpen}
+        items={cart}
+        subtotal={cartSubtotal}
+        delivery={delivery}
+        taxes={taxes}
+        total={total}
+        estimatedMinutes={estimatedMinutes}
+        onEdit={() => setConfirmOpen(false)}
+        onConfirm={handleConfirm}
+      />
     </div>
   );
 }
