@@ -22,6 +22,7 @@ export function ConfirmOrderModal({
   delivery,
   taxes,
   total,
+  discount = 0,
   estimatedMinutes,
   onEdit,
   onConfirm,
