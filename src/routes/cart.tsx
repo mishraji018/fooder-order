@@ -1,6 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ChevronLeft, Minus, Plus, X } from "lucide-react";
+import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
+import { ConfirmOrderModal } from "@/components/ConfirmOrderModal";
 
 export const Route = createFileRoute("/cart")({
   component: CartPage,
@@ -9,12 +11,18 @@ export const Route = createFileRoute("/cart")({
 function CartPage() {
   const navigate = useNavigate();
   const { cart, updateQty, removeFromCart, cartSubtotal, placeOrder } = useCart();
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   const delivery = cart.length > 0 ? 20 : 0;
   const taxes = Math.round(cartSubtotal * 0.05);
   const total = cartSubtotal + delivery + taxes;
+  const estimatedMinutes = cart.reduce(
+    (m, c) => Math.max(m, parseInt(c.item.time) || 0),
+    0
+  ) || 12;
 
-  const handlePlace = () => {
+  const handleConfirm = () => {
+    setConfirmOpen(false);
     placeOrder();
     navigate({ to: "/order-success" });
   };
@@ -102,7 +110,7 @@ function CartPage() {
 
           <div className="fixed bottom-0 left-1/2 z-30 w-full max-w-[430px] -translate-x-1/2 border-t border-border bg-card p-4">
             <button
-              onClick={handlePlace}
+              onClick={() => setConfirmOpen(true)}
               className="w-full rounded-xl bg-primary py-3.5 text-sm font-bold text-primary-foreground"
             >
               Place Order — ₹{total}
@@ -110,6 +118,18 @@ function CartPage() {
           </div>
         </>
       )}
+
+      <ConfirmOrderModal
+        open={confirmOpen}
+        items={cart}
+        subtotal={cartSubtotal}
+        delivery={delivery}
+        taxes={taxes}
+        total={total}
+        estimatedMinutes={estimatedMinutes}
+        onEdit={() => setConfirmOpen(false)}
+        onConfirm={handleConfirm}
+      />
     </div>
   );
 }
