@@ -1,4 +1,4 @@
-import { Outlet, createRootRoute, HeadContent, Scripts, Link } from "@tanstack/react-router";
+import { Outlet, createRootRoute, Link } from "@tanstack/react-router";
 import { Toaster } from "sonner";
 import { CartProvider } from "@/contexts/CartContext";
 import { BottomNav } from "@/components/BottomNav";
@@ -46,15 +46,9 @@ export const Route = createRootRoute({
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        {children}
-        <Scripts />
-      </body>
-    </html>
+    <>
+      {children}
+    </>
   );
 }
 
