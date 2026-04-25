@@ -135,7 +135,7 @@ export function ConfirmOrderModal({
                 className="flex flex-[1.3] items-center justify-center gap-1.5 rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground"
               >
                 <Check size={16} />
-                Confirm & Place
+                Confirm & Pay →
               </button>
             </div>
           </motion.div>
