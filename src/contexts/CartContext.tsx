@@ -13,6 +13,7 @@ type CartContextValue = {
   removeFromCart: (id: number) => void;
   placeOrder: () => void;
   resetOrder: () => void;
+  editOrder: () => void;
   cartCount: number;
   cartSubtotal: number;
 };
