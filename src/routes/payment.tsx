@@ -11,8 +11,8 @@ const OPTIONS = [
   {
     id: "cod",
     icon: "💵",
-    title: "Cash on Delivery",
-    desc: "Pay when food arrives",
+    title: "Pay at Table",
+    desc: "Pay after your meal",
     enabled: true,
   },
   {
@@ -44,9 +44,9 @@ function PaymentPage() {
   const [selected] = useState("cod");
   const [loading, setLoading] = useState(false);
 
-  const delivery = cart.length > 0 ? 20 : 0;
+  const serviceCharge = 0;
   const taxes = Math.round(cartSubtotal * 0.05);
-  const baseTotal = cartSubtotal + delivery + taxes;
+  const baseTotal = cartSubtotal + serviceCharge + taxes;
   const discountAmt = Math.round((baseTotal * promoDiscount) / 100);
   const total = baseTotal - discountAmt;
 

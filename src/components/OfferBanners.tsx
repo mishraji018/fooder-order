@@ -8,7 +8,7 @@ const BANNERS = [
   },
   {
     bg: "linear-gradient(135deg, oklch(0.72 0.13 215), oklch(0.62 0.13 230))",
-    title: "🚀 Free delivery",
+    title: "🚀 Priority Serving",
     sub: "On orders above ₹200",
   },
   {

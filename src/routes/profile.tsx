@@ -1,6 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import {
+  Search as SearchIcon,
+  X,
   MapPin,
   Bell,
   Moon,
@@ -9,6 +11,7 @@ import {
   Info,
   ChevronRight,
   Pencil,
+  ChevronLeft
 } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 
@@ -23,8 +26,14 @@ function ProfilePage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background pb-[80px]">
-      <header className="px-4 pt-4 pb-2">
-        <h1 className="text-[22px] font-extrabold text-foreground">Profile 👤</h1>
+      <header className="flex items-center gap-3 px-4 pt-4 pb-2">
+        <Link 
+          to="/home" 
+          className="flex h-10 w-10 items-center justify-center rounded-xl bg-card shadow-sm border border-border"
+        >
+          <ChevronLeft size={20} />
+        </Link>
+        <h1 className="text-[20px] font-extrabold text-foreground leading-tight">Profile 👤</h1>
       </header>
 
       {/* User card */}
@@ -172,17 +181,12 @@ function Toggle({ on, onChange }: { on: boolean; onChange: () => void }) {
         onChange();
       }}
       className={
-        "relative h-6 w-11 rounded-full transition-colors " +
-        (on ? "bg-primary" : "bg-border")
+        "flex h-6 w-11 items-center rounded-full px-0.5 transition-colors " +
+        (on ? "bg-primary justify-end" : "bg-border justify-start")
       }
       aria-pressed={on}
     >
-      <span
-        className={
-          "absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform " +
-          (on ? "translate-x-[22px]" : "translate-x-0.5")
-        }
-      />
+      <div className="h-5 w-5 rounded-full bg-white shadow-sm" />
     </button>
   );
 }

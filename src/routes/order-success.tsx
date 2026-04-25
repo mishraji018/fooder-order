@@ -52,7 +52,7 @@ function OrderSuccess() {
         </div>
         <div className="mt-3 space-y-2 rounded-xl bg-primary-light px-3 py-2 text-xs font-semibold text-primary">
           <div>⏱ Ready in ~{maxTime || 12} min</div>
-          <div>💵 Cash on Delivery</div>
+          <div>💵 Pay at Table</div>
         </div>
       </div>
 

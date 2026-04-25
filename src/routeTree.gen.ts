@@ -16,7 +16,9 @@ import { Route as PaymentRouteImport } from './routes/payment'
 import { Route as OrdersRouteImport } from './routes/orders'
 import { Route as OrderTrackingRouteImport } from './routes/order-tracking'
 import { Route as OrderSuccessRouteImport } from './routes/order-success'
+import { Route as LoyaltyRouteImport } from './routes/loyalty'
 import { Route as HomeRouteImport } from './routes/home'
+import { Route as CustomBuilderRouteImport } from './routes/custom-builder'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as ArRouteImport } from './routes/ar'
 import { Route as IndexRouteImport } from './routes/index'
@@ -57,9 +59,19 @@ const OrderSuccessRoute = OrderSuccessRouteImport.update({
   path: '/order-success',
   getParentRoute: () => rootRouteImport,
 } as any)
+const LoyaltyRoute = LoyaltyRouteImport.update({
+  id: '/loyalty',
+  path: '/loyalty',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HomeRoute = HomeRouteImport.update({
   id: '/home',
   path: '/home',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CustomBuilderRoute = CustomBuilderRouteImport.update({
+  id: '/custom-builder',
+  path: '/custom-builder',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CartRoute = CartRouteImport.update({
@@ -87,7 +99,9 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ar': typeof ArRoute
   '/cart': typeof CartRoute
+  '/custom-builder': typeof CustomBuilderRoute
   '/home': typeof HomeRoute
+  '/loyalty': typeof LoyaltyRoute
   '/order-success': typeof OrderSuccessRoute
   '/order-tracking': typeof OrderTrackingRoute
   '/orders': typeof OrdersRoute
@@ -101,7 +115,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ar': typeof ArRoute
   '/cart': typeof CartRoute
+  '/custom-builder': typeof CustomBuilderRoute
   '/home': typeof HomeRoute
+  '/loyalty': typeof LoyaltyRoute
   '/order-success': typeof OrderSuccessRoute
   '/order-tracking': typeof OrderTrackingRoute
   '/orders': typeof OrdersRoute
@@ -116,7 +132,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/ar': typeof ArRoute
   '/cart': typeof CartRoute
+  '/custom-builder': typeof CustomBuilderRoute
   '/home': typeof HomeRoute
+  '/loyalty': typeof LoyaltyRoute
   '/order-success': typeof OrderSuccessRoute
   '/order-tracking': typeof OrderTrackingRoute
   '/orders': typeof OrdersRoute
@@ -132,7 +150,9 @@ export interface FileRouteTypes {
     | '/'
     | '/ar'
     | '/cart'
+    | '/custom-builder'
     | '/home'
+    | '/loyalty'
     | '/order-success'
     | '/order-tracking'
     | '/orders'
@@ -146,7 +166,9 @@ export interface FileRouteTypes {
     | '/'
     | '/ar'
     | '/cart'
+    | '/custom-builder'
     | '/home'
+    | '/loyalty'
     | '/order-success'
     | '/order-tracking'
     | '/orders'
@@ -160,7 +182,9 @@ export interface FileRouteTypes {
     | '/'
     | '/ar'
     | '/cart'
+    | '/custom-builder'
     | '/home'
+    | '/loyalty'
     | '/order-success'
     | '/order-tracking'
     | '/orders'
@@ -175,7 +199,9 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ArRoute: typeof ArRoute
   CartRoute: typeof CartRoute
+  CustomBuilderRoute: typeof CustomBuilderRoute
   HomeRoute: typeof HomeRoute
+  LoyaltyRoute: typeof LoyaltyRoute
   OrderSuccessRoute: typeof OrderSuccessRoute
   OrderTrackingRoute: typeof OrderTrackingRoute
   OrdersRoute: typeof OrdersRoute
@@ -237,11 +263,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OrderSuccessRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/loyalty': {
+      id: '/loyalty'
+      path: '/loyalty'
+      fullPath: '/loyalty'
+      preLoaderRoute: typeof LoyaltyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/home': {
       id: '/home'
       path: '/home'
       fullPath: '/home'
       preLoaderRoute: typeof HomeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/custom-builder': {
+      id: '/custom-builder'
+      path: '/custom-builder'
+      fullPath: '/custom-builder'
+      preLoaderRoute: typeof CustomBuilderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cart': {
@@ -279,7 +319,9 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ArRoute: ArRoute,
   CartRoute: CartRoute,
+  CustomBuilderRoute: CustomBuilderRoute,
   HomeRoute: HomeRoute,
+  LoyaltyRoute: LoyaltyRoute,
   OrderSuccessRoute: OrderSuccessRoute,
   OrderTrackingRoute: OrderTrackingRoute,
   OrdersRoute: OrdersRoute,

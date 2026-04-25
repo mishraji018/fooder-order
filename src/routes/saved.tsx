@@ -9,8 +9,9 @@ export const Route = createFileRoute("/saved")({
 });
 
 function SavedPage() {
-  const { favorites } = useCart();
-  const items = foods.filter((f) => favorites.includes(f.id));
+  const { favorites, customFavorites } = useCart();
+  const regularItems = foods.filter((f) => favorites.includes(f.id));
+  const items = [...regularItems, ...customFavorites];
 
   return (
     <div className="flex min-h-screen flex-col bg-background pb-[80px]">

@@ -87,7 +87,7 @@ export function ConfirmOrderModal({
             {/* Totals */}
             <div className="space-y-1.5 text-sm">
               <Row label="Subtotal" value={`₹${subtotal}`} />
-              <Row label="Delivery" value={`₹${delivery}`} />
+              <Row label="Service Charge" value="₹0" />
               <Row label="Tax (5%)" value={`₹${taxes}`} />
               {discount > 0 && (
                 <div className="flex items-center justify-between">

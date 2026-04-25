@@ -2,6 +2,7 @@ import { Outlet, createRootRoute, HeadContent, Scripts, Link } from "@tanstack/r
 import { Toaster } from "sonner";
 import { CartProvider } from "@/contexts/CartContext";
 import { BottomNav } from "@/components/BottomNav";
+import { SupportWidget } from "@/components/SupportWidget";
 
 import appCss from "../styles.css?url";
 
@@ -16,7 +17,7 @@ function NotFoundComponent() {
         </p>
         <div className="mt-6">
           <Link
-            to="/"
+            to="/home"
             className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
           >
             Go home
@@ -67,6 +68,7 @@ function RootComponent() {
         <div className="relative w-full max-w-[430px] min-h-screen bg-background overflow-hidden shadow-xl">
           <Outlet />
           <BottomNav />
+          <SupportWidget />
         </div>
       </div>
       <Toaster

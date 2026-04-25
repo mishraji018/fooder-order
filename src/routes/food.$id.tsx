@@ -1,5 +1,6 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { ChevronLeft, Plus, Minus, Heart } from "lucide-react";
 import { toast } from "sonner";
 import { foods } from "@/lib/foodar-data";
@@ -15,6 +16,9 @@ function FoodDetail() {
   const navigate = useNavigate();
   const { addToCart, isFavorite, toggleFavorite } = useCart();
   const [qty, setQty] = useState(1);
+  const [instructions, setInstructions] = useState("");
+
+  const quickChips = ["🌶️ Extra Spicy", "🧅 No Onions", "🧂 Less Salt", "🫙 Extra Sauce", "🥬 No Lettuce", "🌿 Extra Herbs"];
 
   const food = foods.find((f) => f.id === Number(id));
 
@@ -31,111 +35,143 @@ function FoodDetail() {
 
   const fav = isFavorite(food.id);
   const total = food.price * qty;
+  const isAvailable = food.available !== false;
 
   const handleAdd = () => {
-    addToCart(food, qty);
+    if (!isAvailable) {
+      toast.success("We'll notify you when it's back! ✅", { duration: 2000 });
+      return;
+    }
+    addToCart(food, qty, instructions);
     toast.success("Added to cart ✅", { duration: 1500 });
     setTimeout(() => navigate({ to: "/home" }), 400);
   };
 
+  const bgClasses = {
+    mint: "bg-mint",
+    sky: "bg-sky",
+    beige: "bg-beige"
+  };
+
   return (
-    <div className="flex min-h-screen flex-col bg-background pb-28">
-      <div className="flex items-center justify-between px-4 pt-4">
-        <button
-          onClick={() => navigate({ to: "/home" })}
-          className="flex h-10 w-10 items-center justify-center rounded-xl bg-card shadow-sm"
-        >
-          <ChevronLeft size={20} />
-        </button>
-        <h2 className="truncate px-2 text-sm font-extrabold text-foreground">
-          {food.name}
-        </h2>
-        <button
-          onClick={() => toggleFavorite(food.id)}
-          className="flex h-10 w-10 items-center justify-center rounded-xl bg-card shadow-sm"
-          aria-label={fav ? "Remove favorite" : "Add favorite"}
-        >
-          <Heart
-            size={18}
-            className={fav ? "text-destructive" : "text-muted-foreground"}
-            fill={fav ? "currentColor" : "none"}
-          />
-        </button>
-      </div>
-
-      <div className="mx-4 mt-4 flex h-56 items-center justify-center rounded-3xl bg-primary-light text-[110px]">
-        {food.emoji}
-      </div>
-
-      <div className="px-5 pt-5">
-        <h1 className="text-[22px] font-extrabold leading-tight text-foreground">
-          {food.name}
-        </h1>
-        <div className="mt-2 flex items-center gap-2 text-xs text-muted-foreground">
-          <StarRating rating={food.rating} />
-          <span>·</span>
-          <span>120 reviews</span>
-          <span>·</span>
-          <span>🕐 {food.time}</span>
-        </div>
-        <div className="mt-3 text-[24px] font-black text-primary">₹{food.price}</div>
-
-        <h3 className="mt-5 text-[15px] font-bold text-foreground">About</h3>
-        <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{food.desc}</p>
-
-        <h3 className="mt-5 text-[15px] font-bold text-foreground">Nutrition Info</h3>
-        <div className="mt-2 flex gap-2">
-          {[
-            { e: "🔥", v: `${food.calories} cal` },
-            { e: "🥩", v: `${food.protein} protein` },
-            { e: "🍞", v: `${food.carbs} carbs` },
-          ].map((n) => (
-            <div
-              key={n.v}
-              className="flex-1 rounded-xl bg-muted px-2 py-2.5 text-center text-[11px] font-medium text-foreground"
-            >
-              <div className="text-base">{n.e}</div>
-              <div className="mt-0.5">{n.v}</div>
-            </div>
-          ))}
-        </div>
-
-        <h3 className="mt-5 text-[15px] font-bold text-foreground">Quantity</h3>
-        <div className="mt-2 flex justify-center">
-          <div
-            className="inline-flex items-center gap-3 rounded-full bg-card p-1.5"
-            style={{ boxShadow: "var(--shadow-card)" }}
+    <div className="flex min-h-screen flex-col bg-background pb-32">
+      {/* Curved Header */}
+      <div className={`relative h-[340px] w-full rounded-b-[48px] px-4 pt-6 ${bgClasses[food.bgColor || 'mint']}`}>
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => navigate({ to: "/home" })}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/80 backdrop-blur-md shadow-sm text-[#121212]"
           >
+            <ChevronLeft size={20} />
+          </button>
+          <button
+             className="flex h-10 w-10 items-center justify-center rounded-full bg-white/80 backdrop-blur-md shadow-sm text-[#121212]"
+          >
+             <span className="text-lg">🔗</span>
+          </button>
+        </div>
+
+        <motion.div 
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="mt-4 flex justify-center"
+        >
+          <img 
+            src={food.image} 
+            alt={food.name} 
+            className="h-[220px] w-full object-contain drop-shadow-2xl"
+          />
+        </motion.div>
+      </div>
+
+      {/* Info Content */}
+      <div className="relative -mt-10 rounded-t-[40px] bg-background px-6 pt-10">
+        <div className="flex items-center justify-between">
+           <div>
+              <h1 className="text-[26px] font-black leading-tight text-foreground">
+                {food.name}
+              </h1>
+              <p className="mt-1 text-sm font-medium text-muted-foreground italic">Pure joy in every bite</p>
+           </div>
+           <button
+             onClick={() => toggleFavorite(food.id)}
+             className="flex h-12 w-12 items-center justify-center rounded-full bg-card border border-border shadow-sm"
+           >
+             <Heart
+               size={20}
+               className={fav ? "text-destructive" : "text-muted-foreground"}
+               fill={fav ? "currentColor" : "none"}
+             />
+           </button>
+        </div>
+
+        <div className="mt-6 flex items-center justify-between border-b border-border pb-6">
+           <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-1.5 text-base font-black text-foreground">
+                 <span className="text-warning">⭐</span> {food.rating}
+              </div>
+              <span className="text-[10px] font-bold text-muted-foreground uppercase">Rating</span>
+           </div>
+           <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-1.5 text-base font-black text-foreground">
+                 <span className="text-primary">🕒</span> {food.time}
+              </div>
+              <span className="text-[10px] font-bold text-muted-foreground uppercase">Cooking</span>
+           </div>
+           <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-1.5 text-base font-black text-foreground">
+                 <span className="text-success">🔥</span> {food.calories}
+              </div>
+              <span className="text-[10px] font-bold text-muted-foreground uppercase">Kcal</span>
+           </div>
+        </div>
+
+
+        <div className="mt-8">
+          <h3 className="text-lg font-black text-foreground">Description</h3>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            {food.desc}. Our chefs use only the freshest ingredients to ensure a premium taste experience. Perfect for a quick meal or a satisfying snack.
+          </p>
+        </div>
+
+        {/* Special Instructions */}
+        <div className="mt-8">
+          <h3 className="text-base font-black text-foreground">Special Instructions 📝</h3>
+          <textarea
+            value={instructions}
+            onChange={(e) => setInstructions(e.target.value.slice(0, 100))}
+            placeholder="e.g. No onions, Extra spicy..."
+            className="mt-3 w-full resize-none rounded-2xl border border-border bg-muted/20 p-4 text-sm text-foreground outline-none focus:border-primary"
+            rows={2}
+          />
+        </div>
+      </div>
+
+      {/* Bottom Sticky Action */}
+      <div className="fixed bottom-0 left-1/2 z-40 w-full max-w-[430px] -translate-x-1/2 bg-card/90 p-6 pt-4 backdrop-blur-xl border-t border-border flex items-center justify-between gap-6 shadow-[0_-10px_30px_rgba(0,0,0,0.05)]">
+         <div className="flex items-center gap-4 rounded-2xl bg-muted p-2">
             <button
               onClick={() => setQty(Math.max(1, qty - 1))}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-light text-primary"
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-card border border-border shadow-sm text-foreground transition-transform active:scale-90"
             >
-              <Minus size={14} />
+              <Minus size={18} />
             </button>
-            <span className="min-w-6 text-center text-base font-bold">{qty}</span>
+            <span className="min-w-6 text-center text-lg font-black text-foreground">{qty}</span>
             <button
               onClick={() => setQty(qty + 1)}
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground"
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-lg transition-transform active:scale-90"
             >
-              <Plus size={14} />
+              <Plus size={18} />
             </button>
-          </div>
-        </div>
-      </div>
+         </div>
 
-      <div className="fixed bottom-0 left-1/2 z-30 flex w-full max-w-[430px] -translate-x-1/2 items-center gap-3 border-t border-border bg-card px-4 py-3">
-        <div>
-          <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
-            Total
-          </div>
-          <div className="text-lg font-black text-foreground">₹{total}</div>
-        </div>
-        <button
-          onClick={handleAdd}
-          className="flex-1 rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground"
-        >
-          Add to Cart →
-        </button>
+         <button
+           onClick={handleAdd}
+           disabled={!isAvailable}
+           className="h-[56px] flex-1 rounded-3xl bg-primary text-sm font-black text-primary-foreground shadow-[0_10px_25px_-5px_rgba(255,112,67,0.4)] transition-all active:scale-95 disabled:opacity-50"
+         >
+           Add to Cart
+         </button>
       </div>
     </div>
   );

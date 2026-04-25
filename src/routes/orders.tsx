@@ -49,82 +49,74 @@ function OrdersPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background pb-[80px]">
-      <header className="px-4 pt-4 pb-2">
-        <h1 className="text-[22px] font-extrabold text-foreground">My Orders 🧾</h1>
+    <div className="flex min-h-screen flex-col bg-background pb-[120px]">
+      <header className="px-4 pt-6 pb-2 flex items-center justify-between">
+        <button onClick={() => navigate({ to: "/home" })} className="flex h-10 w-10 items-center justify-center rounded-full bg-card border border-border shadow-sm">
+           <span className="text-lg">⟨</span>
+        </button>
+        <h1 className="text-[18px] font-black text-foreground">Orders</h1>
+        <button className="flex h-10 w-10 items-center justify-center rounded-full bg-card border border-border shadow-sm">
+           <span className="text-lg">⋮</span>
+        </button>
       </header>
 
-      <div className="space-y-4 px-4 pt-2">
+      <div className="space-y-6 px-4 pt-4">
         {!noActive && orderedItems.length > 0 && (
-          <div
-            className="rounded-2xl bg-card p-4"
-            style={{ boxShadow: "var(--shadow-card)", borderLeft: "4px solid var(--primary)" }}
-          >
-            <div className="flex items-center justify-between">
-              <span className="rounded-full bg-primary-light px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-primary">
-                🔄 Active Order
-              </span>
-              <span className="text-xs font-bold text-foreground">#ORD-2847</span>
-            </div>
-            <div className="mt-3 space-y-1.5">
-              {orderedItems.map((c) => (
-                <div key={c.item.id} className="flex items-center justify-between text-sm">
-                  <span className="text-foreground">
-                    <span className="mr-1.5">{c.item.emoji}</span>
-                    {c.item.name} <span className="text-muted-foreground">× {c.quantity}</span>
-                  </span>
-                  <span className="font-bold text-foreground">
-                    ₹{c.item.price * c.quantity}
-                  </span>
+          <div className="overflow-hidden rounded-[32px] bg-mint shadow-xl">
+             <div className="p-6">
+                <div className="flex items-center justify-between">
+                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-xl">
+                      🍔
+                   </div>
+                   <div className="flex flex-col items-end">
+                      <span className="text-[13px] font-bold text-[#1A1A1A]/80">Active Order</span>
+                      <span className="text-[16px] font-black text-[#1A1A1A]">₹{activeOrderTotal}</span>
+                   </div>
                 </div>
-              ))}
-            </div>
-            <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
-              <span className="text-sm font-bold text-foreground">Total</span>
-              <span className="text-base font-black text-primary">₹{activeOrderTotal}</span>
-            </div>
-            <Link
-              to="/order-tracking"
-              className="mt-3 block w-full rounded-xl bg-primary py-2.5 text-center text-sm font-bold text-primary-foreground"
-            >
-              Track →
-            </Link>
+                
+                <div className="mt-6 flex flex-col items-center">
+                   <div className="relative">
+                      <img 
+                        src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&q=80&w=400" 
+                        alt="Order" 
+                        className="w-48 h-48 object-contain drop-shadow-2xl"
+                      />
+                      <div className="absolute top-0 left-0 -rotate-12 rounded bg-white px-2 py-1 text-[10px] font-black uppercase text-foreground shadow-sm">
+                         40% OFF
+                      </div>
+                   </div>
+                   <h2 className="mt-4 text-xl font-black text-[#1A1A1A]">Current Meal</h2>
+                </div>
+             </div>
+             
           </div>
         )}
 
         {orderHistory.length > 0 && (
-          <>
-            <div className="text-[13px] font-bold text-foreground">Past Orders</div>
-            {orderHistory.map((o) => (
-              <div
-                key={o.id}
-                className="rounded-2xl bg-card p-4"
-                style={{ boxShadow: "var(--shadow-card)" }}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-foreground">{o.id}</span>
-                  <span className="text-[11px] text-muted-foreground">{o.date}</span>
+          <div className="space-y-4">
+            <h3 className="text-base font-black text-foreground">Order History</h3>
+            {orderHistory.map((o, idx) => {
+              const colors = ["bg-sky", "bg-beige", "bg-mint"];
+              const color = colors[idx % colors.length];
+              
+              return (
+                <div key={o.id} className={`overflow-hidden rounded-[32px] ${color} shadow-lg`}>
+                   <div className="p-5">
+                      <div className="flex items-center justify-between">
+                         <div className="flex items-center gap-2">
+                            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-base">
+                               {o.items[0]?.emoji || "📦"}
+                            </span>
+                            <span className="text-sm font-black text-[#1A1A1A] truncate max-w-[120px]">{o.items[0]?.name}</span>
+                         </div>
+                         <span className="text-sm font-black text-[#1A1A1A]">₹{o.total}</span>
+                      </div>
+                   </div>
+                   
                 </div>
-                <div className="mt-1 text-xs text-muted-foreground">
-                  {o.items.map((it) => `${it.emoji} ${it.name} × ${it.qty}`).join(", ")}
-                </div>
-                <div className="mt-3 flex items-center justify-between">
-                  <span className="rounded-full bg-success/10 px-2 py-0.5 text-[10px] font-bold text-success">
-                    {o.status}
-                  </span>
-                  <span className="text-base font-black text-primary">₹{o.total}</span>
-                </div>
-                <button
-                  onClick={() =>
-                    handleReorder(o.items.map((it) => it.foodId).filter((x): x is number => !!x))
-                  }
-                  className="mt-3 w-full rounded-xl border-[1.5px] border-primary bg-card py-2 text-xs font-bold text-primary"
-                >
-                  Reorder
-                </button>
-              </div>
-            ))}
-          </>
+              );
+            })}
+          </div>
         )}
       </div>
     </div>

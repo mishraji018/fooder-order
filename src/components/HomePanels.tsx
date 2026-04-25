@@ -43,43 +43,43 @@ export function AIPanel() {
   };
 
   return (
-    <motion.div
-      layout
-      className="rounded-t-[20px] bg-card"
-      style={{ boxShadow: "var(--shadow-panel)" }}
-    >
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="flex w-full items-center gap-3 px-4 pt-3 pb-3"
-      >
-        <div className="mx-auto h-1 w-10 rounded-full bg-border absolute left-1/2 -translate-x-1/2 top-1.5" />
-        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-light text-primary">
-          <Bot size={18} />
-        </div>
-        <span className="flex-1 text-left text-sm font-medium text-foreground">
-          {open ? "AI Assistant" : "Ask AI about food..."}
-        </span>
-        {open ? <ChevronDown size={18} /> : <ChevronUp size={18} />}
-      </button>
-
-      <AnimatePresence initial={false}>
+    <div className="fixed bottom-24 right-4 z-[60] flex flex-col items-end gap-3 pointer-events-none">
+      <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="overflow-hidden"
+            initial={{ opacity: 0, y: 20, scale: 0.9, originX: "100%", originY: "100%" }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            className="pointer-events-auto mb-2 w-[320px] overflow-hidden rounded-[28px] bg-card shadow-2xl border border-border"
           >
-            <div className="px-4 pb-3">
-              <div className="h-[180px] overflow-y-auto rounded-xl bg-background p-3 space-y-2">
+            {/* Chat Header */}
+            <div className="bg-primary p-4 flex items-center gap-3">
+               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 text-white">
+                  <Bot size={20} />
+               </div>
+               <div>
+                  <div className="text-sm font-bold text-white">FoodAR AI</div>
+                  <div className="text-[10px] text-white/80">Online · Ask me anything!</div>
+               </div>
+               <button onClick={() => setOpen(false)} className="ml-auto text-white/80">
+                  <ChevronDown size={20} />
+               </button>
+            </div>
+
+            <div className="p-4 bg-background/50">
+              <div className="h-[250px] overflow-y-auto pr-1 space-y-3 scrollbar-hide">
                 {messages.map((m, i) => (
-                  <div key={i} className={m.from === "ai" ? "flex" : "flex justify-end"}>
+                  <motion.div 
+                    initial={{ opacity: 0, x: m.from === "ai" ? -10 : 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    key={i} 
+                    className={m.from === "ai" ? "flex" : "flex justify-end"}
+                  >
                     <div
                       className={
                         m.from === "ai"
-                          ? "max-w-[80%] rounded-2xl rounded-bl-sm bg-card px-3 py-2 text-[13px] text-foreground shadow-sm"
-                          : "max-w-[80%] rounded-2xl rounded-br-sm bg-primary px-3 py-2 text-[13px] text-primary-foreground"
+                          ? "max-w-[85%] rounded-2xl rounded-tl-none bg-card px-3 py-2 text-[13px] text-foreground shadow-sm border border-border"
+                          : "max-w-[85%] rounded-2xl rounded-tr-none bg-primary px-3 py-2 text-[13px] text-primary-foreground shadow-md"
                       }
                     >
                       <div>{m.text}</div>
@@ -92,7 +92,7 @@ export function AIPanel() {
                                 key={id}
                                 to="/food/$id"
                                 params={{ id: String(id) }}
-                                className="inline-flex items-center gap-1 rounded-full bg-primary-light px-2.5 py-1 text-[11px] font-semibold text-primary"
+                                className="inline-flex items-center gap-1 rounded-full bg-primary-light px-2.5 py-1 text-[11px] font-semibold text-primary border border-primary/20"
                               >
                                 {f.emoji} {f.name}
                               </Link>
@@ -101,33 +101,35 @@ export function AIPanel() {
                         </div>
                       )}
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
 
-              <div className="mt-2 flex gap-1.5 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden">
+              {/* Quick Chips */}
+              <div className="mt-3 flex gap-2 overflow-x-auto pb-1 [&::-webkit-scrollbar]:hidden">
                 {QUICK_CHIPS.map((c) => (
                   <button
                     key={c.key}
                     onClick={() => send(c.key)}
-                    className="shrink-0 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground"
+                    className="shrink-0 rounded-full border border-border bg-card px-3 py-1.5 text-[10px] font-bold text-foreground hover:bg-muted"
                   >
                     {c.label}
                   </button>
                 ))}
               </div>
 
-              <div className="mt-2 flex items-center gap-2">
+              {/* Input Area */}
+              <div className="mt-3 flex items-center gap-2">
                 <input
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && send(input)}
-                  placeholder="Type your craving..."
-                  className="flex-1 rounded-xl border-[1.5px] border-border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+                  placeholder="Type a message..."
+                  className="flex-1 rounded-2xl border-none bg-muted/50 px-4 py-2.5 text-sm outline-none placeholder:text-muted-foreground/60"
                 />
                 <button
                   onClick={() => send(input)}
-                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg active:scale-95 transition-transform"
                 >
                   <Send size={16} />
                 </button>
@@ -136,7 +138,26 @@ export function AIPanel() {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
+
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="pointer-events-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white shadow-2xl transition-all hover:scale-105 active:scale-95 border border-white/20"
+        style={{ boxShadow: "0 0 20px rgba(255, 112, 67, 0.4), 0 10px 40px rgba(255, 112, 67, 0.2)" }}
+      >
+        <AnimatePresence mode="wait">
+          {open ? (
+            <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
+              <ChevronDown size={24} />
+            </motion.div>
+          ) : (
+            <motion.div key="bot" initial={{ scale: 0.5, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.5, opacity: 0 }} className="relative">
+              <Bot size={24} />
+              <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-green-500 border-2 border-primary" />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </button>
+    </div>
   );
 }
 

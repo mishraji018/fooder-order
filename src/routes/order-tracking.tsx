@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronLeft, Check, Pencil, Home as HomeIcon, Star } from "lucide-react";
 import { toast } from "sonner";
 import { useCart, type OrderStatus } from "@/contexts/CartContext";
@@ -10,10 +10,10 @@ export const Route = createFileRoute("/order-tracking")({
 
 type Step = { label: string; time: string };
 const STEP_DEFS: Step[] = [
-  { label: "Order Confirmed", time: "2:30 PM" },
-  { label: "Being Prepared", time: "Estimated 2:42 PM" },
-  { label: "Ready for Pickup", time: "~10 min" },
-  { label: "Delivered", time: "~12 min" },
+  { label: "Order Placed", time: "2:30 PM" },
+  { label: "Chef is Cooking", time: "Estimated 2:42 PM" },
+  { label: "Ready to Serve", time: "~10 min" },
+  { label: "Served at Table", time: "Enjoy! 🍽️" },
 ];
 
 function stepStateForIndex(i: number, status: OrderStatus): "done" | "active" | "pending" {
@@ -33,7 +33,30 @@ function stepStateForIndex(i: number, status: OrderStatus): "done" | "active" | 
 
 function OrderTracking() {
   const navigate = useNavigate();
-  const { orderedItems, orderStatus, editOrder } = useCart();
+  const { orderedItems, orderStatus, editOrder, orderPlacedAt, cancelOrder } = useCart();
+
+  const [now, setNow] = useState(Date.now());
+  const [cancelOpen, setCancelOpen] = useState(false);
+  const [cancelReason, setCancelReason] = useState("");
+
+  useEffect(() => {
+    if (orderStatus === "placed" && orderPlacedAt) {
+      const interval = setInterval(() => setNow(Date.now()), 1000);
+      return () => clearInterval(interval);
+    }
+  }, [orderStatus, orderPlacedAt]);
+
+  const elapsedMs = orderPlacedAt ? now - orderPlacedAt : 0;
+  const timeLeftMs = (2 * 60 * 1000) - elapsedMs;
+  const canCancel = orderStatus === "placed" && timeLeftMs > 0;
+  const showExpired = orderStatus === "placed" && timeLeftMs <= 0;
+
+  const handleCancelConfirm = () => {
+    cancelOrder(cancelReason);
+    setCancelOpen(false);
+    toast.success("Order cancelled successfully");
+    navigate({ to: "/home" });
+  };
 
   const orderTotal = orderedItems.reduce(
     (s, c) => s + c.item.price * c.quantity,
@@ -212,7 +235,26 @@ function OrderTracking() {
 
         {/* Action buttons */}
         <div className="mt-4 flex flex-col gap-2.5 pb-4">
-          {canEdit && orderedItems.length > 0 && (
+          {showExpired && (
+            <div className="flex flex-col items-center justify-center rounded-xl bg-card py-3 border border-border">
+              <div className="text-[12px] font-bold text-muted-foreground">Cancellation window expired ⏱</div>
+              <div className="text-[10px] text-primary mt-0.5">Contact support for help →</div>
+            </div>
+          )}
+
+          {canCancel && (
+            <button
+              onClick={() => setCancelOpen(true)}
+              className="flex w-full flex-col items-center justify-center gap-1 rounded-xl border-[1.5px] border-destructive bg-card py-2 text-sm font-bold text-destructive"
+            >
+              <div>❌ Cancel Order</div>
+              <div className={`text-[10px] ${timeLeftMs < 30000 ? 'text-destructive' : 'text-muted-foreground'}`}>
+                Cancel available for: {Math.floor(timeLeftMs / 60000)}:{(Math.floor((timeLeftMs % 60000) / 1000)).toString().padStart(2, '0')}
+              </div>
+            </button>
+          )}
+
+          {canEdit && orderedItems.length > 0 && !canCancel && !showExpired && (
             <button
               onClick={handleEdit}
               className="flex w-full items-center justify-center gap-2 rounded-xl border-[1.5px] border-primary bg-card py-3 text-sm font-bold text-primary"
@@ -236,6 +278,34 @@ function OrderTracking() {
           </Link>
         </div>
       </div>
+
+      {cancelOpen && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-4">
+          <div className="w-full max-w-[430px] rounded-3xl bg-background p-5 shadow-xl border border-border">
+            <h2 className="text-xl font-extrabold text-foreground">Cancel this order? 🤔</h2>
+            <p className="mt-2 text-sm text-muted-foreground">Your food may already be getting prepared.</p>
+            
+            <div className="mt-4 space-y-3">
+              <div className="text-sm font-bold text-foreground">Reason:</div>
+              {["Ordered by mistake", "Changed my mind", "Taking too long", "Other"].map(r => (
+                <label key={r} className="flex items-center gap-3 text-sm text-foreground cursor-pointer">
+                  <input type="radio" name="cancelReason" checked={cancelReason === r} onChange={() => setCancelReason(r)} className="h-4 w-4 accent-primary" />
+                  {r}
+                </label>
+              ))}
+            </div>
+
+            <div className="mt-6 flex gap-3">
+              <button onClick={() => setCancelOpen(false)} className="flex-1 rounded-xl bg-muted py-3 text-sm font-bold text-muted-foreground">
+                Keep Order
+              </button>
+              <button onClick={handleCancelConfirm} disabled={!cancelReason} className="flex-1 rounded-xl bg-destructive py-3 text-sm font-bold text-white disabled:opacity-50">
+                Yes, Cancel ❌
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

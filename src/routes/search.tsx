@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Search as SearchIcon, X } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Search as SearchIcon, X, ChevronLeft } from "lucide-react";
 import { foods } from "@/lib/foodar-data";
 import { useCart } from "@/contexts/CartContext";
 import { FoodCard } from "@/components/FoodCard";
@@ -31,8 +31,14 @@ function SearchPage() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background pb-[80px]">
-      <header className="px-4 pt-4 pb-2">
-        <h1 className="text-[22px] font-extrabold text-foreground">Search</h1>
+      <header className="flex items-center gap-3 px-4 pt-4 pb-2">
+        <Link 
+          to="/home" 
+          className="flex h-10 w-10 items-center justify-center rounded-xl bg-card shadow-sm border border-border"
+        >
+          <ChevronLeft size={20} />
+        </Link>
+        <h1 className="text-[20px] font-extrabold text-foreground leading-tight">Search</h1>
         <div className="mt-3 flex items-center gap-2 rounded-xl border-[1.5px] border-border bg-card px-3 py-2.5">
           <SearchIcon size={16} className="text-muted-foreground" />
           <input
