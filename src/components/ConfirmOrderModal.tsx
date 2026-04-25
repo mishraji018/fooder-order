@@ -9,6 +9,7 @@ type Props = {
   delivery: number;
   taxes: number;
   total: number;
+  discount?: number;
   estimatedMinutes: number;
   onEdit: () => void;
   onConfirm: () => void;
@@ -21,6 +22,7 @@ export function ConfirmOrderModal({
   delivery,
   taxes,
   total,
+  discount = 0,
   estimatedMinutes,
   onEdit,
   onConfirm,
@@ -87,6 +89,12 @@ export function ConfirmOrderModal({
               <Row label="Subtotal" value={`₹${subtotal}`} />
               <Row label="Delivery" value={`₹${delivery}`} />
               <Row label="Tax (5%)" value={`₹${taxes}`} />
+              {discount > 0 && (
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Promo</span>
+                  <span className="font-bold text-success">−₹{discount}</span>
+                </div>
+              )}
             </div>
 
             <div className="my-3 border-t border-border" />
@@ -127,7 +135,7 @@ export function ConfirmOrderModal({
                 className="flex flex-[1.3] items-center justify-center gap-1.5 rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground"
               >
                 <Check size={16} />
-                Confirm & Place
+                Confirm & Pay →
               </button>
             </div>
           </motion.div>
