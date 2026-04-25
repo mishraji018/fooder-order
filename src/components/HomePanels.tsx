@@ -169,7 +169,7 @@ export function ARPanel() {
       {first && (
         <div className="mt-3 flex items-center gap-3 rounded-xl bg-background p-3">
           <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary-light text-2xl">
-            {first.emoji}
+            {first.item.emoji}
           </div>
           <div className="flex-1">
             <div className="text-sm font-semibold text-foreground">{first.item.name}</div>
