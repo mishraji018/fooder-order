@@ -1,6 +1,7 @@
 import { Outlet, createRootRoute, HeadContent, Scripts, Link } from "@tanstack/react-router";
 import { Toaster } from "sonner";
 import { CartProvider } from "@/contexts/CartContext";
+import { BottomNav } from "@/components/BottomNav";
 
 import appCss from "../styles.css?url";
 
@@ -65,6 +66,7 @@ function RootComponent() {
       >
         <div className="relative w-full max-w-[430px] min-h-screen bg-background overflow-hidden shadow-xl">
           <Outlet />
+          <BottomNav />
         </div>
       </div>
       <Toaster
