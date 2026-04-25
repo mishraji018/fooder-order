@@ -1,14 +1,393 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <title>FoodAR — Order Smart. See in AR.</title>
-    <meta name="description" content="Mobile food ordering with AI suggestions and AR preview." />
-    <meta name="theme-color" content="#FF6B35" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FoodAR — Premium Dine-In & AR Experience</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #FF7043;
+    --primary-glow: rgba(255, 112, 67, 0.4);
+    --secondary: #6366F1;
+    --bg: #050505;
+    --bg-accent: #0A0A0C;
+    --text: #F5F5F7;
+    --muted: #6B7280;
+    --border: rgba(255, 255, 255, 0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ── GRID OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+      linear-gradient(rgba(255, 112, 67, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 112, 67, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── SCANLINES ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.01) 2px, rgba(255, 255, 255, 0.01) 4px);
+    pointer-events: none;
+    z-index: 999;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 60px;
+    background: rgba(5, 5, 5, 0.8);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    z-index: 1000;
+  }
+
+  .nav-logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: var(--primary);
+    text-shadow: 0 0 15px var(--primary-glow);
+  }
+
+  .nav-links { display: flex; gap: 40px; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: 0.3s;
+  }
+  .nav-links a:hover { color: var(--primary); }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 120px 20px;
+    text-align: center;
+    z-index: 10;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(255, 112, 67, 0.1) 0%, transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+    animation: pulse 4s infinite alternate;
+  }
+
+  @keyframes pulse {
+    from { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+  }
+
+  .status-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    background: rgba(255, 112, 67, 0.1);
+    border: 1px solid rgba(255, 112, 67, 0.2);
+    border-radius: 100px;
+    color: var(--primary);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .status-dot {
+    width: 6px; height: 6px;
+    background: var(--primary);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--primary);
+    animation: blink 1.5s infinite;
+  }
+
+  @keyframes blink { 50% { opacity: 0.3; } }
+
+  .hero-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(40px, 10vw, 100px);
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -2px;
+    margin-bottom: 16px;
+    background: linear-gradient(to bottom, #fff 40%, #888);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-subtitle {
+    font-size: 18px;
+    color: var(--muted);
+    max-width: 600px;
+    margin: 0 auto 48px;
+    line-height: 1.6;
+  }
+
+  /* ── QR CODE CARD ── */
+  .qr-container {
+    background: var(--bg-accent);
+    border: 1px solid var(--border);
+    padding: 32px;
+    border-radius: 24px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    margin-bottom: 48px;
+    position: relative;
+    transition: 0.4s;
+  }
+
+  .qr-container:hover {
+    border-color: rgba(255, 112, 67, 0.4);
+    transform: translateY(-5px);
+  }
+
+  .qr-frame {
+    background: #fff;
+    padding: 16px;
+    border-radius: 16px;
+    display: inline-block;
+  }
+
+  .qr-frame img {
+    width: 200px;
+    height: 200px;
+    display: block;
+  }
+
+  .qr-label {
+    margin-top: 16px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--primary);
+  }
+
+  /* ── CTA BUTTONS ── */
+  .hero-btns {
+    display: flex;
+    gap: 20px;
+  }
+
+  .btn {
+    padding: 18px 40px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-decoration: none;
+    text-transform: uppercase;
+    border-radius: 4px;
+    transition: 0.3s;
+    clip-path: polygon(10% 0%, 100% 0%, 90% 100%, 0% 100%);
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: #000;
+    box-shadow: 0 0 20px var(--primary-glow);
+  }
+
+  .btn-primary:hover {
+    background: #fff;
+    box-shadow: 0 0 40px rgba(255,255,255,0.4);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: #fff;
+    border: 1px solid var(--border);
+  }
+
+  .btn-secondary:hover {
+    background: rgba(255,255,255,0.05);
+    border-color: #fff;
+  }
+
+  /* ── FEATURES GRID ── */
+  .features {
+    padding: 100px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+  }
+
+  .feature-card {
+    background: var(--bg-accent);
+    border: 1px solid var(--border);
+    padding: 40px;
+    border-radius: 12px;
+    transition: 0.3s;
+  }
+
+  .feature-card:hover {
+    border-color: var(--primary);
+    background: rgba(255, 112, 67, 0.02);
+  }
+
+  .feature-icon {
+    font-size: 32px;
+    margin-bottom: 24px;
+    display: block;
+  }
+
+  .feature-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+  }
+
+  .feature-desc {
+    color: var(--muted);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    padding: 60px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 14px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  /* ── DECORATIONS ── */
+  .corner {
+    position: absolute;
+    width: 20px; height: 20px;
+    border: 2px solid var(--primary);
+  }
+  .tl { top: -2px; left: -2px; border-right: 0; border-bottom: 0; }
+  .tr { top: -2px; right: -2px; border-left: 0; border-bottom: 0; }
+  .bl { bottom: -2px; left: -2px; border-right: 0; border-top: 0; }
+  .br { bottom: -2px; right: -2px; border-left: 0; border-top: 0; }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px; }
+    .nav-links { display: none; }
+    .hero-title { font-size: 60px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">FOODAR.SYS</div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="https://github.com/mishraji018/fooder-order" target="_blank">Source</a>
+    <a href="/app.html">Launch App</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-glow"></div>
+  
+  <div class="status-tag">
+    <span class="status-dot"></span>
+    AR Systems Online — Table 04 Active
+  </div>
+
+  <h1 class="hero-title">FOODAR</h1>
+  <p class="hero-subtitle">
+    Experience the future of dining. Visualize your meal in augmented reality, customize with AI, and order with a single tap.
+  </p>
+
+  <div class="qr-container">
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+    
+    <div class="qr-frame">
+      <img id="qr-code" src="" alt="QR Code">
+    </div>
+    <div class="qr-label">SCAN TO EXPERIENCE AR</div>
+  </div>
+
+  <div class="hero-btns">
+    <a href="/app.html" class="btn btn-primary">Open Web App</a>
+    <a href="https://github.com/mishraji018/fooder-order" target="_blank" class="btn btn-secondary">View GitHub</a>
+  </div>
+</div>
+
+<section id="features" class="features">
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-icon">🥽</span>
+      <h3 class="feature-title">AR VISUALIZATION</h3>
+      <p class="feature-desc">See your dish in 3D right on your table before you order. No surprises, just perfection.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🤖</span>
+      <h3 class="feature-title">AI CHEF ASSIST</h3>
+      <p class="feature-desc">Smart recommendations based on your mood, cravings, and past favorites.</p>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">⚡</span>
+      <h3 class="feature-title">INSTANT ORDERING</h3>
+      <p class="feature-desc">Direct-to-kitchen protocol. Real-time tracking from chef's pan to your table.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  MADE BY MISHRA_JI — BEYOND DIGITAL DINING
+</footer>
+
+<script>
+  // Dynamically generate QR code based on current URL
+  const currentUrl = window.location.origin + "/app.html";
+  const qrCodeImg = document.getElementById('qr-code');
+  const qrApi = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(currentUrl)}`;
+  qrCodeImg.src = qrApi;
+</script>
+
+</body>
 </html>

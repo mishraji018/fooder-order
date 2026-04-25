@@ -2,7 +2,13 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "cleanUrls": true,
+  "trailingSlash": false,
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/app", "destination": "/app.html" },
+    {
+      "source": "/(home|cart|ar|orders|profile|saved|search|welcome|loyalty|order-success|order-tracking|custom-builder|food/.*)",
+      "destination": "/app.html"
+    }
   ]
 }
