@@ -50,8 +50,9 @@ function OrderSuccess() {
           <span className="text-sm font-bold text-foreground">Total</span>
           <span className="text-base font-black text-primary">₹{total}</span>
         </div>
-        <div className="mt-3 flex items-center gap-1.5 rounded-xl bg-primary-light px-3 py-2 text-xs font-semibold text-primary">
-          ⏱ Ready in ~{maxTime || 12} min
+        <div className="mt-3 space-y-2 rounded-xl bg-primary-light px-3 py-2 text-xs font-semibold text-primary">
+          <div>⏱ Ready in ~{maxTime || 12} min</div>
+          <div>💵 Cash on Delivery</div>
         </div>
       </div>
 
@@ -60,13 +61,13 @@ function OrderSuccess() {
           to="/order-tracking"
           className="w-full rounded-xl bg-primary py-3.5 text-center text-sm font-bold text-primary-foreground"
         >
-          Track Order →
+          🧾 Track Order →
         </Link>
         <Link
           to="/ar"
           className="w-full rounded-xl bg-gradient-to-r from-secondary to-[oklch(0.65_0.13_215)] py-3.5 text-center text-sm font-bold text-white"
         >
-          View in AR 🥽
+          🥽 View in AR
         </Link>
       </div>
     </div>
