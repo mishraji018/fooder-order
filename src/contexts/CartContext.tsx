@@ -57,6 +57,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setTimeout(() => setOrderStatus("preparing"), 1500);
   };
 
+  // Move ordered items back into the cart for editing, reset status to idle
+  const editOrder = () => {
+    setCart((prev) => {
+      // merge ordered items into existing cart (in case any new items were added)
+      const merged = [...prev];
+      orderedItems.forEach((oi) => {
+        const existing = merged.find((c) => c.item.id === oi.item.id);
+        if (existing) existing.quantity += oi.quantity;
+        else merged.push({ ...oi });
+      });
+      return merged;
+    });
+    setOrderedItems([]);
+    setOrderStatus("idle");
+  };
+
   const resetOrder = () => {
     setOrderedItems([]);
     setOrderStatus("idle");
@@ -76,6 +92,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
         removeFromCart,
         placeOrder,
         resetOrder,
+        editOrder,
         cartCount,
         cartSubtotal,
       }}
